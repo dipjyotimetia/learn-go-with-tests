@@ -1,5 +1,7 @@
 # WebSockets
 
+**[You can find all the code for this chapter here](https://github.com/quii/learn-go-with-tests/tree/master/websockets)**
+
 In this chapter we'll learn how to use WebSockets to improve our application. 
 
 ## Project recap
@@ -356,7 +358,7 @@ const htmlTemplatePath = "game.html"
 func NewPlayerServer(store PlayerStore) (*PlayerServer, error) {
 	p := new(PlayerServer)
 
-	tmpl, err := template.ParseFiles("game.html")
+	tmpl, err := template.ParseFiles(htmlTemplatePath)
 
 	if err != nil {
 		return nil, fmt.Errorf("problem opening %s %v", htmlTemplatePath, err)
@@ -700,7 +702,7 @@ Next lets assign it in our constructor
 func NewPlayerServer(store PlayerStore, game Game) (*PlayerServer, error) {
 	p := new(PlayerServer)
 
-	tmpl, err := template.ParseFiles("game.html")
+	tmpl, err := template.ParseFiles(htmlTemplatePath)
 
 	if err != nil {
 		return nil, fmt.Errorf("problem opening %s %v", htmlTemplatePath, err)
@@ -846,7 +848,7 @@ It seems the obvious thing to do, would be to make it so `playerServerWS` _does_
 
 ```go
 func (w *playerServerWS) Write(p []byte) (n int, err error) {
-	err = w.WriteMessage(1, p)
+	err = w.WriteMessage(websocket.TextMessage, p)
 
 	if err != nil {
 		return 0, err
@@ -920,7 +922,7 @@ t.Run("start a game with 3 players, send some blind alerts down WS and declare R
     writeWSMessage(t, ws, "3")
     writeWSMessage(t, ws, winner)
 
-	time.Sleep(10 * time.Millisecond)
+    time.Sleep(10 * time.Millisecond)
     assertGameStartedWith(t, game, 3)
     assertFinishCalledWith(t, game, winner)
 
